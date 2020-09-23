@@ -6,5 +6,29 @@
 <script src="//myradiostream.com/embed/djmbk1"></script>
 <p>No Promise on being good</p>
 <p> Trying to stream once every Tuesday and Thursday 8pm EST, and Fridays 9pm EST</p>
+<?php
+$online = "Online"; // Displays when stream is online
+$offline['server'] = "Offline (No Server Connection)"; // Displays when server is offline
+$offline['source'] = "Offline (No Source)"; // Displays when server is online with no source
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "s25.myradiostream.com:15532/7.html");
+curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+$data = curl_exec($ch);
+curl_close($ch);
+$data = str_replace('</body></html>', "", $data);
+$split = explode(',', $data);
+if (empty($data)) {
+	$status = $offline['server'];
+} else { 
+	if ($split[1] == "0") {
+		$status = $offline['source'];
+	} else {
+		$status = $online;
+	}
+}
+echo $status;
+?>
 </body>
 </html>
